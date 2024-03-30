@@ -11,7 +11,7 @@ public class Program
         ContainerShip ship2 = new ContainerShip(25, 10, 200000); 
 
         var refrigeratedContainer = CreateRefrigeratedContainer("Fish", 2);
-        var gasContainer = CreateGasContainer(10.5);
+        var gasContainer = CreateGasContainer(10.5, false);
 
         refrigeratedContainer.LoadCargo(5000);
         gasContainer.LoadCargo(8500);
@@ -21,7 +21,7 @@ public class Program
 
         List<Container> containers = new List<Container>
         {
-            CreateGasContainer(8),
+            CreateGasContainer(8, true),
             CreateRefrigeratedContainer("Bananas", 13.3)
         };
         containers.ForEach(ship2.LoadContainer);
@@ -46,8 +46,8 @@ public class Program
         return new RefrigeratedContainer(250, 1000, 200, 20000, productType, temperature);
     }
 
-    private static GasContainer CreateGasContainer(double pressure)
+    private static GasContainer CreateGasContainer(double pressure, bool isHazardous)
     {
-        return new GasContainer(300, 1500, 250, 15000, pressure);
+        return new GasContainer(300, 1500, 250, 15000,  pressure, isHazardous);
     }
 }

@@ -2,33 +2,46 @@
 
 public class GasContainer : Container, IHazardNotifier
 {
-    public double Pressure { get; private set; }
-
-    public GasContainer(int height, double tareWeight, int depth, double maximumPayload, double pressure)
-        : base(height, tareWeight, depth, maximumPayload)
-    {
-        this.Pressure = pressure;
-    }
-
-    public override void LoadCargo(double mass)
-    {
-        if (mass > MaximumPayload)
+   
+    
+        public double Pressure { get; private set; }
+        public bool IsHazardous { get; private set; }  
+        public GasContainer(int height, double tareWeight, int depth, double maximumPayload, double pressure, bool isHazardous)
+            : base(height, tareWeight, depth, maximumPayload)
         {
-            NotifyHazard("Attempted to load beyond container's capacity.");
-            throw new OverfillException("Gas container overload: mass of the cargo exceeds the allowable payload.");
+            this.Pressure = pressure;
+            this.IsHazardous = isHazardous;  
         }
 
-        base.LoadCargo(mass);
-    }
+        public override void LoadCargo(double mass)
+        {
+            if (IsHazardous && mass > MaximumPayload * 0.5)
+            {
+                NotifyHazard("Attempted to load hazardous cargo above 50% capacity.");
+                throw new OverfillException("Gas container overload: hazardous cargo exceeds 50% of the allowable payload.");
+            }
+            else if (!IsHazardous && mass > MaximumPayload * 0.9)
+            {
+                NotifyHazard("Attempted to load non-hazardous cargo above 90% capacity.");
+                throw new OverfillException("Gas container overload: non-hazardous cargo exceeds 90% of the allowable payload.");
+            }
 
-    public void NotifyHazard(string message)
-    {
-        Console.WriteLine(
-            $"Notification: Hazardous cargo detected.\nContainer Serial Number: {SerialNumber}: {message}");
-    }
+            CargoMass += mass;
+        }
+        
+        public override void EmptyCargo()
+        {
+            CargoMass -= CargoMass * 0.05; 
+        }
 
-    protected override string GetSerialNumberPrefix()
-    {
-        return "G";
+        public void NotifyHazard(string message)
+        {
+            Console.WriteLine(
+                $"Notification: Hazardous cargo detected.\nContainer Serial Number: {SerialNumber}: {message}");
+        }
+
+        protected override string GetSerialNumberPrefix()
+        {
+            return "G";
+        }
     }
-}

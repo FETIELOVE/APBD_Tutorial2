@@ -2,7 +2,7 @@
 
 public class ContainerShip
 {
-   
+    
     public List<Container> Containers { get; private set; } = new List<Container>();
     public double MaxSpeed { get;   set; }
     public int MaxContainerAmount { get;  set; }
@@ -51,13 +51,14 @@ public class ContainerShip
 
     public void TransferContainer(Container container, ContainerShip targetShip)
     {
-        UnloadContainer(container); 
-        Console.WriteLine($"Container {container} unloaded from the current ship.");
-    
-        targetShip.LoadContainer(container); 
-        Console.WriteLine($"Container {container} loaded to new target ship.");
-    }
+        if (!this.Containers.Remove(container))
+            throw new InvalidOperationException("Container not found.");
 
+        Console.WriteLine($"Container {container.SerialNumber} unloaded from the current ship.");
+
+        targetShip.LoadContainer(container);
+        Console.WriteLine($"Container {container.SerialNumber} loaded to new target ship.");
+    }
     public void LoadListOfContainers(IEnumerable<Container> containers)
     {
         foreach (var container in containers)

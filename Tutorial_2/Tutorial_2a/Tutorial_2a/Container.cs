@@ -3,7 +3,7 @@
 public abstract class Container
 {
     private static HashSet<string> _usedSerialNumbers = new HashSet<string>();
-    private static int _serialCounter;
+    private static int _serialCounter = 0;
     public double CargoMass { get; protected set; }
     public int Height { get; private set; }
     public double TareWeight { get; private set; }
